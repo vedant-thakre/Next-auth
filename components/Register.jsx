@@ -1,9 +1,11 @@
 "use client"
+import axios from 'axios';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
 const register = () => {
+    const [error, setError] = useState("")
     const [user, setUser] = useState({
         name: '',
         email: '',
@@ -16,11 +18,14 @@ const register = () => {
         setUser(prev => ({...prev , [key] : value}))
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        if(!user.name || !user.email || !user.password){
+            setError("Please fill all Details");
+        }
         try {
-            console.log(user);
-            router.push("/login");
+            const res = await axios.post("http://localhost:3000/api/register", user);
+            console.log(res.data);
         } catch (error) {
             console.log(error)
         }
@@ -38,7 +43,7 @@ const register = () => {
             </form>
 
             <div className='bg-red-500 py-1 px-3 text-white w-fit text-sm rounded-md mt-2'>
-                Error Message
+                {error}
             </div>
 
             <Link href={"/login"} className='text-sm mt-3 text-right' > 
