@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/db/db";
 import { User } from "@/models/userModel";
 
-export async function GET(req, { params }) {
+export async function GET(req) {
   try {
-    const { id } = params;
-    console.log(id);
+    console.log(req.params);
+    const { id } = req.params;
     await connectDB();
     const user = await User.findById(id);
     return NextResponse.json(

@@ -24,8 +24,19 @@ const register = () => {
             setError("Please fill all Details");
         }
         try {
+
+            const respo = await axios.post("http://localhost:3000/api/exist", user.email);
+            console.log(respo);
+
+            const { user } = await respo.json();
+
+
+            if(user){
+                setError("User Already Exists");
+                return;
+            }
+
             const res = await axios.post("http://localhost:3000/api/register", user);
-            console.log(res.data);
         } catch (error) {
             console.log(error)
         }
