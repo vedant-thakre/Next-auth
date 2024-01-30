@@ -30,7 +30,6 @@ const register = () => {
 
             const { user } = await respo.json();
 
-
             if(user){
                 setError("User Already Exists");
                 return;
