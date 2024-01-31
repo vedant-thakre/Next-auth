@@ -1,8 +1,7 @@
 "use client"
 import axios from 'axios';
-import Link from 'next/link'
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import Link from 'next/link';
+import React, { useState } from 'react';
 
 const register = () => {
     const [error, setError] = useState("")
@@ -12,8 +11,6 @@ const register = () => {
         password: '',
     });
 
-    const router = useRouter();
-
     const handleChange = (key, value) => {
         setUser(prev => ({...prev , [key] : value}))
     }
@@ -22,14 +19,18 @@ const register = () => {
         e.preventDefault();
         if(!user.name || !user.email || !user.password){
             setError("Please fill all Details");
+            return;
         }
         try {
             const res = await axios.post("http://localhost:3000/api/register", user);
+            console.log("Res" , res);
         } catch (error) {
             console.log(error);
-            console.log(error.message);
+            console.log(error.response.data.message);
         }
     }
+    
+
   return (
     <div className='grid place-items-center h-screen'>
         <div className='shadow-lg p-5 rounded-lg border-t-4 border-green-400'>

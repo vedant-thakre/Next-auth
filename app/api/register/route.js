@@ -3,48 +3,26 @@ import { connectDB } from "@/db/db";
 import { User } from "@/models/userModel";
 import bcrypt from "bcrypt";
 
-export async function POST(req){
-    try {
-        await connectDB();
-        const { name, email, password } = await req.json();
+export async function POST(req) {
+  try {
+    await connectDB();
+    const { name, email, password } = await req.json();
 
-        const userExist = await User.findOne({ email });
+    const user = await User.findOne({ email: email});
 
-        if(userExist){
-            return NextResponse.json(
-              {
-                status: false,
-                message: `User Already Exist`,
-              },
-              {
-                status: 400,
-              }
-            );
-        }
-        const hash = await bcrypt.hash(password, 10);
-        const newUser = await User.create({
-            name,
-            email,
-            password:hash,
-        });
-        return NextResponse.json({
-            status: true,
-            message: `Hello ${name}`,
-            data: newUser
-        },
-        {
-            status: 201,
-        }
-        );
-    } catch (error) {
-        console.log(error);
-        return NextResponse.json({
-            status: false,
-            message: `Failed to Register`,
-        },
-        {
-            status: 500,
-        }
-        );
+    if(user){
+       return NextResponse.json({ message: "User Already Exist" });
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const newuser = await User.create({ name, email, password: hashedPassword });
+
+    return NextResponse.json({ message: "User registered.", data: newuser, }, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "An error occurred while registering the user." },
+      { status: 500 }
+    );
+  }
 }
